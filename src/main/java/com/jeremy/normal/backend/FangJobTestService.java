@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 
@@ -153,23 +154,24 @@ public class FangJobTestService extends Thread {
                         String value = CollectionUtils.isEmpty(((List) v)) ? null : ((List) v).get(0).toString();
                         item.put(k, value);
                     });
-                    //保存
+
                     final List<LinkedHashMap<String, String>> resultList = new ArrayList<>();
                     resultList.add(item);
 
-                    List<FangEntity> fangEntities = new ArrayList<>();
 
-                    resultList.forEach(r -> {
-                        FangEntity fangEntity = new FangEntity();
-                        fangEntity.setPageUrl(r.get("page_url"));
-                        fangEntity.setName(r.get("name"));
-                        fangEntity.setPrice(r.get("price"));
-                        fangEntity.setAddress(r.get("address"));
+                    FangEntity fangEntity = new FangEntity();
+                    fangEntity.setPageUrl("https://wh.fang.ke.com" + item.get("page_url"));
+                    fangEntity.setName(item.get("name"));
+                    fangEntity.setPrice(item.get("price"));
+                    fangEntity.setAddress(item.get("address"));
+                    fangEntity.setTime(item.get("time"));
 
-                        fangEntities.add(fangEntity);
-                    });
+                    if (StringUtils.isEmpty(fangEntity.getName())){
+                        log.error("url:{}已开启屏蔽");
+                    }else{
+                        fangService.save(fangEntity);
+                    }
 
-                    fangService.saveBatch(fangEntities);
 
                     System.out.println(resultList);
                 });

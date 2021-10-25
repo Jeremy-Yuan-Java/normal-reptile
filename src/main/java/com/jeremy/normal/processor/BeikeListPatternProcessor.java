@@ -20,11 +20,11 @@ public class BeikeListPatternProcessor implements PageProcessor {
             .me()
             .setUserAgent(
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36")
-            .setSleepTime(100000)
+            .setSleepTime(50000)
             .setRetryTimes(5)
             .setRetrySleepTime(100000)
             .setCycleRetryTimes(3)
-            .setTimeOut(100000);
+            .setTimeOut(50000);
 
     @Override
     public void process(Page page) {

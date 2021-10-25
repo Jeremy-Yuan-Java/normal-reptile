@@ -14,16 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * 2019/9/11 16:19
- * yechangjun
- */
 @Slf4j
 @Component
 @Scope("prototype")
@@ -34,7 +31,6 @@ public class BeikeJobTestService extends Thread {
 
     @Override
     public void run() {
-
 
         BeikeListPatternProcessor processor = new BeikeListPatternProcessor();
 
@@ -157,7 +153,7 @@ public class BeikeJobTestService extends Thread {
                     resultList.add(item);
 
 
-                    List<FangEntity> fangEntities = new ArrayList<>();
+
 
 
                     FangEntity fangEntity = new FangEntity();
@@ -166,10 +162,14 @@ public class BeikeJobTestService extends Thread {
                     fangEntity.setPrice(item.get("price"));
                     fangEntity.setAddress(item.get("address"));
                     fangEntity.setTime(item.get("time"));
-                    fangEntities.add(fangEntity);
+
+                    if (StringUtils.isEmpty(fangEntity.getName())){
+                        log.error("url:{}已开启屏蔽");
+                    }else{
+                        fangService.save(fangEntity);
+                    }
 
 
-                    fangService.saveBatch(fangEntities);
                     System.out.println(resultList);
                 });
 
