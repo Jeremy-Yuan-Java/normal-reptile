@@ -1,12 +1,16 @@
 package com.jeremy.normal.backend;
 
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jeremy.normal.component.DefaultHttpClientDownloader;
 import com.jeremy.normal.component.SpiderHolder;
 import com.jeremy.normal.constans.CoreConstant;
-import com.jeremy.normal.entity.FangEntity;
-import com.jeremy.normal.processor.BeikeListPatternProcessor;
-import com.jeremy.normal.processor.FangListPatternProcessor;
-import com.jeremy.normal.service.FangService;
+import com.jeremy.normal.entity.SecondHandCommunityEntity;
+import com.jeremy.normal.entity.SecondHandHousingEntity;
+import com.jeremy.normal.mapper.SecondHandCommunityMapper;
+import com.jeremy.normal.mapper.SecondHandHousingMapper;
+import com.jeremy.normal.processor.SecondHandCommunityPatternProcessor;
+import com.jeremy.normal.processor.SecondHandHousingPatternProcessor;
 import com.jeremy.normal.util.LinkUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Strings;
@@ -14,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
@@ -24,15 +29,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 @Scope("prototype")
-public class BeikeJobTestService extends Thread {
+public class SecondHandCommunityReptile extends Thread {
 
     @Autowired
-    private FangService fangService;
+    private SecondHandCommunityMapper secondHandCommunityMapper;
 
     @Override
     public void run() {
 
-        BeikeListPatternProcessor processor = new BeikeListPatternProcessor();
+        SecondHandCommunityPatternProcessor processor = new SecondHandCommunityPatternProcessor();
 
         Map<String/*内容页链接*/, LinkedHashMap<String, String> /*列表页提取的数据*/> itemHolder = new ConcurrentHashMap<>();
 
@@ -87,7 +92,7 @@ public class BeikeJobTestService extends Thread {
     private Spider buildListSpiderWorker(Spider contentWorker, Map<String, LinkedHashMap<String, String>> itemHolder, PageProcessor processor) {
         Spider spiderWorker = Spider.create(processor);
         spiderWorker.setDownloader(new DefaultHttpClientDownloader());
-        spiderWorker.thread(2).setUUID(UUID.randomUUID().toString()).addUrl("https://wh.fang.ke.com/loupan")
+        spiderWorker.thread(2).setUUID(UUID.randomUUID().toString()).addUrl("https://wh.ke.com/xiaoqu")
                 .addPipeline((resultItems, task) -> {
                     String requestUrl = resultItems.getRequest().getUrl();
 
@@ -106,25 +111,17 @@ public class BeikeJobTestService extends Thread {
                         }
                     });
 
-                    //判断有没有正文页
-                    if (Strings.isNullOrEmpty("//li[@class='resblock-list post_ulog_exposure_scroll has-results']//a/@href")) {
-                        //没有正文页面 直接保存数据
-                        System.out.println(resultList);
+                    resultList.forEach((v) -> {
+                        String url = v.get(CoreConstant.PAGE_URL);
+                        if (!Strings.isNullOrEmpty(url)&&judgeIsReptileByUrl(url)) {
 
-                    } else {
-                        //如果有正文页面 先把数据存放到内存里 等待后续处理完正文页后再一起保存
-                        resultList.forEach((v) -> {
-                            String url = v.get(CoreConstant.PAGE_URL);
-                            if (!Strings.isNullOrEmpty(url)) {
+                            //把正文页的链接添加到带爬取页面
+                            url = LinkUtil.getAbsoluteURL(requestUrl, url);
 
-                                //把正文页的链接添加到带爬取页面
-                                url = LinkUtil.getAbsoluteURL(requestUrl, url);
-
-                                itemHolder.put(url, v);
-                                contentWorker.addUrl(url);
-                            }
-                        });
-                    }
+                            itemHolder.put(url, v);
+                            contentWorker.addUrl(url);
+                        }
+                    });
                 });
 
         return spiderWorker;
@@ -133,7 +130,7 @@ public class BeikeJobTestService extends Thread {
     private Spider buildContentWorker(Map<String, LinkedHashMap<String, String>> itemHolder, PageProcessor processor) {
         Spider contentWorker = Spider.create(processor);
         contentWorker.setDownloader(new DefaultHttpClientDownloader());
-        contentWorker.thread(2).setUUID(UUID.randomUUID().toString()).
+        contentWorker.thread(4).setUUID(UUID.randomUUID().toString()).
                 addPipeline((resultItems, task) -> {
                     String requestUrl = resultItems.getRequest().getUrl();
                     log.info("get content page|url={}|uuid={}|spiderId={}", requestUrl);
@@ -143,34 +140,20 @@ public class BeikeJobTestService extends Thread {
                     //把暂存的数据删了 防止内存溢出
                     itemHolder.remove(requestUrl);
                     System.out.println(resultMap);
-
                     resultMap.forEach((k, v) -> {
                         String value = CollectionUtils.isEmpty(((List) v)) ? null : ((List) v).get(0).toString();
                         item.put(k, value);
+
                     });
+                    SecondHandCommunityEntity secondHandCommunityEntity = JSONObject.parseObject(JSONObject.toJSONString(item), SecondHandCommunityEntity.class);
 
-                    final List<LinkedHashMap<String, String>> resultList = new ArrayList<>();
-                    resultList.add(item);
-
-
-
-
-
-                    FangEntity fangEntity = new FangEntity();
-                    fangEntity.setPageUrl("https://wh.fang.ke.com" + item.get("page_url"));
-                    fangEntity.setName(item.get("name"));
-                    fangEntity.setPrice(item.get("price"));
-                    fangEntity.setAddress(item.get("address"));
-                    fangEntity.setTime(item.get("time"));
-
-                    if (StringUtils.isEmpty(fangEntity.getName())){
+                    if (StringUtils.isEmpty(item.get("communityName"))){
                         log.error("url:{}已开启屏蔽");
+                        secondHandCommunityEntity.setCommunityName(item.get("communityName").trim());
                     }else{
-                        fangService.save(fangEntity);
+                        secondHandCommunityMapper.insert(secondHandCommunityEntity);
+                        System.out.println(secondHandCommunityEntity);
                     }
-
-
-                    System.out.println(resultList);
                 });
 
 //        }
@@ -178,5 +161,18 @@ public class BeikeJobTestService extends Thread {
         return contentWorker;
     }
 
+
+
+    private boolean judgeIsReptileByUrl(String url) {
+        LambdaQueryWrapper<SecondHandCommunityEntity> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SecondHandCommunityEntity::getPageUrl, url);
+        Integer integer = secondHandCommunityMapper.selectCount(queryWrapper);
+        if (ObjectUtils.isEmpty(integer) || integer == 0) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
 
 }
