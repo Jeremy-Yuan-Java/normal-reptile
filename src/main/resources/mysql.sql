@@ -1,23 +1,21 @@
-
-create table t_fang
+-- auto-generated definition
+create table t_second_hand_community
 (
-    id       int auto_increment
+    id                        int auto_increment
         primary key,
-    name     varchar(255) not null,
-    price    varchar(255) null,
-    address  varchar(255) null,
-    page_url varchar(255) null,
-    time     varchar(255) null
+    page_url                  varchar(255) null,
+    community_name            varchar(255) null,
+    community_unit_price      varchar(255) null,
+    community_unit_price_desc varchar(255) null comment '小区参考价',
+    building_type             varchar(255) null comment 'ji按住类型',
+    property_expenses         varchar(255) null comment '物业费用',
+    property_company          varchar(255) null comment '物业公司',
+    developer                 varchar(255) null comment '开发商',
+    total_building            varchar(255) null comment '楼栋总数',
+    total_house               varchar(255) null comment '房屋总数'
 );
 
-
-create table t_fang_old
-(
-    id   int auto_increment
-        primary key,
-    json varchar(5000) null
-);
-
+-- auto-generated definition
 create table t_second_hand_housing
 (
     id                   int auto_increment
@@ -35,7 +33,7 @@ create table t_second_hand_housing
     floor                varchar(255) null comment '楼层',
     area                 varchar(255) null comment '面积',
     house_structure      varchar(255) null comment '户型结构',
-    building_type        varchar(255) null comment '房屋朝向',
+    building_type        varchar(255) null comment '建筑类型',
     towards              varchar(255) null comment '朝向',
     building_structure   varchar(255) null comment '建筑类型',
     renovation_condition varchar(255) null comment '装修情况',
@@ -50,3 +48,4 @@ create table t_second_hand_housing
     mortgage             varchar(255) null comment '抵押信息',
     set_area             varchar(255) null comment '套内面积'
 );
+

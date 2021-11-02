@@ -14,7 +14,7 @@ public class SecondHandHousingEntity {
     private String unit;
     private String areaInfo;
     private String communityName;
-    private String area_name;
+    private String areaName;
     private String areaLocation;
     private String houseType;
     private String floor;

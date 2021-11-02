@@ -7,7 +7,7 @@ import com.jeremy.normal.component.SpiderHolder;
 import com.jeremy.normal.constans.CoreConstant;
 import com.jeremy.normal.entity.SecondHandHousingEntity;
 import com.jeremy.normal.mapper.SecondHandHousingMapper;
-import com.jeremy.normal.processor.BeikeOldListPatternProcessor;
+import com.jeremy.normal.processor.SecondHandHousingPatternProcessor;
 import com.jeremy.normal.util.LinkUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Strings;
@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 @Component
 @Scope("prototype")
-public class BeikeOldJobTestService extends Thread {
+public class SecondHandHousingReptile extends Thread {
 
     @Autowired
     private SecondHandHousingMapper secondHandHousingMapper;
@@ -34,7 +34,7 @@ public class BeikeOldJobTestService extends Thread {
     @Override
     public void run() {
 
-        BeikeOldListPatternProcessor processor = new BeikeOldListPatternProcessor();
+        SecondHandHousingPatternProcessor processor = new SecondHandHousingPatternProcessor();
 
         Map<String/*内容页链接*/, LinkedHashMap<String, String> /*列表页提取的数据*/> itemHolder = new ConcurrentHashMap<>();
 

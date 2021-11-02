@@ -1,6 +1,6 @@
 import com.jeremy.normal.EasyApplication;
-import com.jeremy.normal.backend.BeikeJobTestService;
-import com.jeremy.normal.backend.BeikeOldJobTestService;
+import com.jeremy.normal.backend.SecondHandCommunityReptile;
+import com.jeremy.normal.backend.SecondHandHousingReptile;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,12 +14,20 @@ public class BeikeOldJobTest {
 
 
     @Resource
-    private BeikeOldJobTestService beikeOldJobTest;
+    private SecondHandHousingReptile secondHandHousingReptile;
+
+    @Resource
+    private SecondHandCommunityReptile secondHandCommunityReptile;
+
 
     @Test
-    public void startTest(){
-        beikeOldJobTest.run();
+    public void startSecondHandHousingReptileTest(){
+        secondHandHousingReptile.run();
     }
 
+    @Test
+    public void startSecondHandCommunityReptileTest(){
+        secondHandCommunityReptile.run();
+    }
 
 }

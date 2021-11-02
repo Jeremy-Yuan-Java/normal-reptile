@@ -1,7 +1,6 @@
 package com.jeremy.normal.processor;
 
-import com.jeremy.normal.mapper.SecondHandHousingMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.alibaba.fastjson.JSONObject;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
@@ -11,11 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * 2019/8/27 22:58
- * yechangjun
- */
-public class BeikeOldListPatternProcessor implements PageProcessor {
+public class SecondHandHousingPatternProcessor implements PageProcessor {
 
     private Site site = Site
             .me()
@@ -29,11 +24,21 @@ public class BeikeOldListPatternProcessor implements PageProcessor {
 
     @Override
     public void process(Page page) {
+        System.out.println("page.getUrl().get():"+page.getUrl().get());
         //列表页
-        if (page.getUrl().regex("https://wh.ke.com/ershoufang/pg\\w+").match() || page.getRequest().getUrl().equals("https://wh.ke.com/ershoufang/pg1co32y1a2a3p2p3p4/")) {
+        if (page.getUrl().regex("https://wh.ke.com/ershoufang/[a-z]+/pg\\w+").match() || page.getRequest().getUrl().equals("https://wh.ke.com/ershoufang/pg1co32y1a2a3p2p3p4/")) {
             ArrayList<String> list = new ArrayList<>();
-            for (int i = 0; i < 100; i++) {
-                list.add("https://wh.ke.com/ershoufang/pg" + i + "co32y1a2a3p2p3p4");
+
+            for (int i = 0; i < 75; i++) {
+                list.add("https://wh.ke.com/ershoufang/qingshan/pg" + i+"p2p3p4");
+            }
+
+            for (int i = 0; i < 48; i++) {
+                list.add("https://wh.ke.com/ershoufang/guanggudong/pg" + i +"p2p3p4");
+            }
+            for (int i = 0; i<69; i++) {
+
+                list.add("https://wh.ke.com/ershoufang/hanyang/pg" + i+ "mw1su1ty1p3p4p5");
             }
             page.addTargetRequests(list);
             HashMap<String, String> fields = new HashMap<>(4);
@@ -41,6 +46,7 @@ public class BeikeOldListPatternProcessor implements PageProcessor {
             fields.forEach((k, v) -> {
                 List<String> pageList = page.getHtml().xpath(v).all().stream().filter(r -> r.contains("ershoufang")).collect(Collectors.toList());
                 page.putField(k, pageList);
+                System.out.println("--------------page_url---------------:"+ JSONObject.toJSONString(pageList));
             });
         } else {
             //正文页
@@ -57,17 +63,6 @@ public class BeikeOldListPatternProcessor implements PageProcessor {
 
             contentFields.put("houseTypeListName", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[1]/div[2]/ul/li/span/text()");
             contentFields.put("houseTypeListValue", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[1]/div[2]/ul/li/text()");
-//            contentFields.put("floor", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[1]/div[2]/ul/li[2]/text()");
-//            contentFields.put("area", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[1]/div[2]/ul/li[3]/text()");
-//            contentFields.put("house_structure", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[1]/div[2]/ul/li[4]/text()");
-//            contentFields.put("building_type", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[1]/div[2]/ul/li[5]/text()");
-//            contentFields.put("towards", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[1]/div[2]/ul/li[6]/text()");
-//            contentFields.put("building_structure", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[1]/div[2]/ul/li[7]/text()");
-//            contentFields.put("renovation_condition", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[1]/div[2]/ul/li[8]/text()");
-//            contentFields.put("echelon", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[1]/div[2]/ul/li[9]/text()");
-//            contentFields.put("is_elevator", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[1]/div[2]/ul/li[10]/text()");
-//
-
 
             contentFields.put("listingTime", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[2]/div[2]/ul/li[1]/text()");
             contentFields.put("trade", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[2]/div[2]/ul/li[2]/text()");
