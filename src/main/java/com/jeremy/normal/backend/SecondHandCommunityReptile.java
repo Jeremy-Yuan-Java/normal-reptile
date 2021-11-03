@@ -149,8 +149,8 @@ public class SecondHandCommunityReptile extends Thread {
 
                     if (StringUtils.isEmpty(item.get("communityName"))){
                         log.error("url:{}已开启屏蔽");
-                        secondHandCommunityEntity.setCommunityName(item.get("communityName").trim());
                     }else{
+                        secondHandCommunityEntity.setCommunityName(item.get("communityName").trim());
                         secondHandCommunityMapper.insert(secondHandCommunityEntity);
                         System.out.println(secondHandCommunityEntity);
                     }

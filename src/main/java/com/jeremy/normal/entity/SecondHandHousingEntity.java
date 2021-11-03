@@ -34,4 +34,5 @@ public class SecondHandHousingEntity {
     private String years;
     private String property;
     private String mortgage;
+    private String communityPageUrl;
 }

@@ -57,6 +57,9 @@ public class SecondHandHousingPatternProcessor implements PageProcessor {
             contentFields.put("unit", "//*[@id=\"beike\"]/div[1]/div[4]/div[1]/div[2]/div[2]/div[1]/div[1]/i/text()");
             contentFields.put("areaInfo", "//*[@id=\"beike\"]/div[1]/div[4]/div[1]/div[2]/div[3]/div[3]/div[2]/text()");
             contentFields.put("communityName", "//*[@id=\"beike\"]/div[1]/div[4]/div[1]/div[2]/div[4]/div[1]/a[1]/text()");
+            contentFields.put("communityPageUrl", "//*[@id=\"beike\"]/div[1]/div[4]/div[1]/div[2]/div[4]/div[1]/a[1]/@href");
+
+
             contentFields.put("areaName", "/html/body/div[1]/div[4]/div[1]/div[2]/div[4]/div[2]/span[2]/a[1]/text()");
             contentFields.put("areaLocation", "//*[@id=\"beike\"]/div[1]/div[4]/div[1]/div[2]/div[4]/div[2]/span[2]/a[2]/text()");
 

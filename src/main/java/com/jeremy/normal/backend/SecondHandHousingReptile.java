@@ -155,7 +155,7 @@ public class SecondHandHousingReptile extends Thread {
                     if (StringUtils.isEmpty(item.get("title"))){
                         log.error("url:{}已开启屏蔽");
                     }else{
-
+                        secondHandHousingEntity.setCommunityPageUrl(LinkUtil.getAbsoluteURL(requestUrl,secondHandHousingEntity.getCommunityPageUrl()));
                         if (nameList.indexOf("房屋户型")!=-1){
                             secondHandHousingEntity.setHouseType(valueList.get(nameList.indexOf("房屋户型")));
                         }
