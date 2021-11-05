@@ -1,6 +1,8 @@
 package com.jeremy.normal.processor;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+import org.springframework.util.CollectionUtils;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
@@ -15,11 +17,11 @@ public class SecondHandHousingPatternProcessor implements PageProcessor {
             .me()
             .setUserAgent(
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36")
-            .setSleepTime(50000)
+            .setSleepTime(25000)
             .setRetryTimes(5)
             .setRetrySleepTime(100000)
             .setCycleRetryTimes(3)
-            .setTimeOut(50000);
+            .setTimeOut(25000);
 
     @Override
     public void process(Page page) {
@@ -32,6 +34,20 @@ public class SecondHandHousingPatternProcessor implements PageProcessor {
                 List<String> pageList = page.getHtml().xpath(v).all().stream().filter(r -> r.contains("ershoufang")).collect(Collectors.toList());
                 page.putField(k, pageList);
                 System.out.println("--------------page_url---------------:"+ JSONObject.toJSONString(pageList));
+                if (!CollectionUtils.isEmpty(pageList)) {
+                    int pgIndex = page.getUrl().get().indexOf("pg");
+
+                    // 解决爬取小区的页面翻页达到10以上
+                    try {
+                        int intPageMax = Integer.parseInt(page.getUrl().get().substring(pgIndex + 2, pgIndex + 4)) + 1;
+                        page.addTargetRequest(page.getUrl().get().substring(0, pgIndex + 2) + intPageMax + page.getUrl().get().substring(pgIndex + 4));
+                    } catch (Exception e) {
+                        int intPage = Integer.parseInt(page.getUrl().get().substring(pgIndex + 2, pgIndex + 3)) + 1;
+                        page.addTargetRequest(page.getUrl().get().substring(0, pgIndex + 2) + intPage + page.getUrl().get().substring(pgIndex + 3));
+                    }
+
+
+                }
             });
         } else {
             //正文页

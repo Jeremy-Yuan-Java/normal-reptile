@@ -91,20 +91,19 @@ public class SecondHandHousingReptile extends Thread {
         spiderWorker.setDownloader(new DefaultHttpClientDownloader());
         List<String> urls = new ArrayList<>();
         LambdaQueryWrapper<SecondHandCommunityEntity> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.le(SecondHandCommunityEntity::getId, 1000);
+        lambdaQueryWrapper.le(SecondHandCommunityEntity::getId, 100);
         List<SecondHandCommunityEntity> list = secondHandCommunityMapper.selectList(lambdaQueryWrapper);
-        for (int i = 1; i < 4; i++) {
 
             try {
                 for (SecondHandCommunityEntity secondHandCommunityEntity : list) {
-                    String str = "https://wh.ke.com/ershoufang/pg" + i + "co41rs" + URLEncoder.encode(secondHandCommunityEntity.getCommunityName(), "utf-8") + "/";
+                    String str = "https://wh.ke.com/ershoufang/pg1" + "co41rs" + URLEncoder.encode(secondHandCommunityEntity.getCommunityName(), "utf-8") + "/";
                     urls.add(str);
                 }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
 
-        }
+
         spiderWorker.startUrls(urls);
         spiderWorker.thread(4).setUUID(UUID.randomUUID().toString())
                 .addPipeline((resultItems, task) -> {
