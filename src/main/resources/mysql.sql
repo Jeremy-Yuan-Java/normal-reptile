@@ -6,14 +6,22 @@ create table t_second_hand_community
     page_url                  varchar(255) null,
     community_name            varchar(255) null,
     community_unit_price      varchar(255) null,
-    community_unit_price_desc varchar(255) null comment '小区参考价',
-    building_type             varchar(255) null comment 'ji按住类型',
-    property_expenses         varchar(255) null comment '物业费用',
-    property_company          varchar(255) null comment '物业公司',
-    developer                 varchar(255) null comment '开发商',
-    total_building            varchar(255) null comment '楼栋总数',
-    total_house               varchar(255) null comment '房屋总数'
+    community_unit_price_desc varchar(255) null comment '' 小区参考价 '',
+    building_type             varchar(255) null comment '' ji按住类型 '',
+    property_expenses         varchar(255) null comment '' 物业费用 '',
+    property_company          varchar(255) null comment '' 物业公司 '',
+    developer                 varchar(255) null comment '' 开发商 '',
+    total_building            varchar(255) null comment '' 楼栋总数 '',
+    total_house               varchar(255) null comment '' 房屋总数 ''
 );
+
+create
+index idx_community_name
+    on t_second_hand_community (community_name);
+
+create
+index idx_url
+    on t_second_hand_community (page_url);
 
 -- auto-generated definition
 create table t_second_hand_housing
@@ -46,6 +54,52 @@ create table t_second_hand_housing
     years                varchar(255) null comment '房屋年限',
     property             varchar(255) null comment '产权所属',
     mortgage             varchar(255) null comment '抵押信息',
-    set_area             varchar(255) null comment '套内面积'
+    set_area             varchar(255) null comment '套内面积',
+    community_page_url   varchar(255) null
 );
+
+create index idx_community_page_url
+    on t_second_hand_housing (community_page_url);
+
+create index idx_url
+    on t_second_hand_housing (page_url);
+
+select ((community.community_unit_price - hoursing.unit_price) / community.community_unit_price) pre,
+       hoursing.unit_price,
+       community.community_unit_price,
+       hoursing.page_url,
+       title,
+       price,
+       unit_price,
+       unit,
+       area_info,
+       hoursing.community_name,
+       area_name,
+       area_location,
+       house_type,
+       floor,
+       area,
+       house_structure,
+       hoursing.building_type,
+       towards,
+       building_structure,
+       renovation_condition,
+       echelon,
+       is_elevator,
+       listing_time,
+       trade,
+       last_transaction,
+       housing_purpose,
+       years,
+       property,
+       mortgage,
+       set_area
+from t_second_hand_housing hoursing
+         inner join t_second_hand_community community on hoursing.community_page_url = community.page_url
+where housing_purpose like '%住宅%'
+  and is_elevator ='有'
+  and years not like "%未满两年%"
+  and ((community.community_unit_price - hoursing.unit_price) / community.community_unit_price) >0.1
+  and hoursing.unit_price<20000
+ORDER BY pre desc;
 
