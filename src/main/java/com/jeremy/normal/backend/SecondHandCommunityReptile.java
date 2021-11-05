@@ -3,14 +3,10 @@ package com.jeremy.normal.backend;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.jeremy.normal.component.DefaultHttpClientDownloader;
-import com.jeremy.normal.component.SpiderHolder;
 import com.jeremy.normal.constans.CoreConstant;
 import com.jeremy.normal.entity.SecondHandCommunityEntity;
-import com.jeremy.normal.entity.SecondHandHousingEntity;
 import com.jeremy.normal.mapper.SecondHandCommunityMapper;
-import com.jeremy.normal.mapper.SecondHandHousingMapper;
 import com.jeremy.normal.processor.SecondHandCommunityPatternProcessor;
-import com.jeremy.normal.processor.SecondHandHousingPatternProcessor;
 import com.jeremy.normal.util.LinkUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Strings;
@@ -45,9 +41,6 @@ public class SecondHandCommunityReptile extends Thread {
         Spider contentWorker = buildContentWorker(itemHolder, processor);
         //构建列表页爬虫
         Spider spiderWorker = buildListSpiderWorker(contentWorker, itemHolder, processor);
-        //将爬虫保存起来 用于控制其生命周期 比如停止爬虫
-
-        SpiderHolder.putSpider(spiderWorker, contentWorker);
 
         //异步启动正文页和内容页的爬虫
         spiderWorker.runAsync();
@@ -61,10 +54,6 @@ public class SecondHandCommunityReptile extends Thread {
 
         //阻塞当前线程 直到内容页爬虫没有任务
         blockCurrentThread(contentWorker);
-
-        //爬虫容器移除uuid对应的爬虫
-        SpiderHolder.removeSpider(spiderWorker.getUUID());
-
     }
 
 
@@ -92,7 +81,7 @@ public class SecondHandCommunityReptile extends Thread {
     private Spider buildListSpiderWorker(Spider contentWorker, Map<String, LinkedHashMap<String, String>> itemHolder, PageProcessor processor) {
         Spider spiderWorker = Spider.create(processor);
         spiderWorker.setDownloader(new DefaultHttpClientDownloader());
-        spiderWorker.thread(2).setUUID(UUID.randomUUID().toString()).addUrl("https://wh.ke.com/xiaoqu")
+        spiderWorker.thread(4).setUUID(UUID.randomUUID().toString()).addUrl("https://wh.ke.com/xiaoqu")
                 .addPipeline((resultItems, task) -> {
                     String requestUrl = resultItems.getRequest().getUrl();
 

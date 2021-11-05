@@ -31,7 +31,7 @@ public class SecondHandCommunityPatternProcessor implements PageProcessor {
             for (int i = 0; i < 7; i++) {
                 list.add("https://wh.ke.com/xiaoqu/qingshan/pg"+ i );
             }
-            for (int i = 0; i < 41; i++) {
+            for (int i = 41; i > 0; i--) {
                 list.add("https://wh.ke.com/xiaoqu/jiangan/pg" + i);
             }
             for (int i = 0; i < 27; i++) {
@@ -43,7 +43,7 @@ public class SecondHandCommunityPatternProcessor implements PageProcessor {
             for (int i = 0; i < 14; i++) {
                 list.add("https://wh.ke.com/xiaoqu/dongxihu/pg"+ i);
             }
-            for (int i = 0; i < 49; i++) {
+            for (int i = 49; i > 49; i--) {
                 list.add("https://wh.ke.com/xiaoqu/wuchang/pg" + i);
             }
             for (int i = 0; i < 27; i++) {

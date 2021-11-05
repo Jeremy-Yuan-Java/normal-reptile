@@ -5,7 +5,6 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,21 +25,7 @@ public class SecondHandHousingPatternProcessor implements PageProcessor {
     public void process(Page page) {
         System.out.println("page.getUrl().get():"+page.getUrl().get());
         //列表页
-        if (page.getUrl().regex("https://wh.ke.com/ershoufang/[a-z]+/pg\\w+").match() || page.getRequest().getUrl().equals("https://wh.ke.com/ershoufang/pg1co32y1a2a3p2p3p4/")) {
-            ArrayList<String> list = new ArrayList<>();
-
-            for (int i = 0; i < 75; i++) {
-                list.add("https://wh.ke.com/ershoufang/qingshan/pg" + i+"p2p3p4");
-            }
-
-            for (int i = 0; i < 48; i++) {
-                list.add("https://wh.ke.com/ershoufang/guanggudong/pg" + i +"p2p3p4");
-            }
-            for (int i = 0; i<69; i++) {
-
-                list.add("https://wh.ke.com/ershoufang/hanyang/pg" + i+ "mw1su1ty1p3p4p5");
-            }
-            page.addTargetRequests(list);
+        if (page.getUrl().regex("https://wh.ke.com/ershoufang/pg\\d+co41rs[\\w%]+").match()) {
             HashMap<String, String> fields = new HashMap<>(4);
             fields.put("page_url", "//ul[@class='sellListContent']//li[@class='clear']//a/@href");
             fields.forEach((k, v) -> {
