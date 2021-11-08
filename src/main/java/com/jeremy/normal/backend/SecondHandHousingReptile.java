@@ -143,7 +143,7 @@ public class SecondHandHousingReptile extends Thread {
     private Spider buildContentWorker(Map<String, LinkedHashMap<String, String>> itemHolder, PageProcessor processor) {
         Spider contentWorker = Spider.create(processor);
         contentWorker.setDownloader(new DefaultHttpClientDownloader());
-        contentWorker.thread(6).setUUID(UUID.randomUUID().toString()).
+        contentWorker.thread(4).setUUID(UUID.randomUUID().toString()).
                 addPipeline((resultItems, task) -> {
                     String requestUrl = resultItems.getRequest().getUrl();
                     log.info("get content page|url={}|uuid={}|spiderId={}", requestUrl);

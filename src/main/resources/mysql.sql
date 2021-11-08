@@ -6,56 +6,55 @@ create table t_second_hand_community
     page_url                  varchar(255) null,
     community_name            varchar(255) null,
     community_unit_price      varchar(255) null,
-    community_unit_price_desc varchar(255) null comment '' 小区参考价 '',
-    building_type             varchar(255) null comment '' ji按住类型 '',
-    property_expenses         varchar(255) null comment '' 物业费用 '',
-    property_company          varchar(255) null comment '' 物业公司 '',
-    developer                 varchar(255) null comment '' 开发商 '',
-    total_building            varchar(255) null comment '' 楼栋总数 '',
-    total_house               varchar(255) null comment '' 房屋总数 ''
+    community_unit_price_desc varchar(255) null comment '小区参考价',
+    building_type             varchar(255) null comment 'ji按住类型',
+    property_expenses         varchar(255) null comment '物业费用',
+    property_company          varchar(255) null comment '物业公司',
+    developer                 varchar(255) null comment '开发商',
+    total_building            varchar(255) null comment '楼栋总数',
+    total_house               varchar(255) null comment '房屋总数'
 );
 
-create
-index idx_community_name
+create index idx_community_name
     on t_second_hand_community (community_name);
 
-create
-index idx_url
+create index idx_url
     on t_second_hand_community (page_url);
 
 -- auto-generated definition
 create table t_second_hand_housing
 (
-    id                   int auto_increment
+    id                      int auto_increment
         primary key,
-    page_url             varchar(255) null comment '页面list',
-    title                varchar(255) null comment '标题',
-    price                varchar(255) null comment '总价',
-    unit_price           varchar(255) null comment '单价',
-    unit                 varchar(255) null comment '单位',
-    area_info            varchar(255) null comment '建筑历史',
-    community_name       varchar(255) null comment '小区名称',
-    area_name            varchar(255) null comment '大区域',
-    area_location        varchar(255) null comment '小区域',
-    house_type           varchar(255) null comment '房屋户型',
-    floor                varchar(255) null comment '楼层',
-    area                 varchar(255) null comment '面积',
-    house_structure      varchar(255) null comment '户型结构',
-    building_type        varchar(255) null comment '建筑类型',
-    towards              varchar(255) null comment '朝向',
-    building_structure   varchar(255) null comment '建筑类型',
-    renovation_condition varchar(255) null comment '装修情况',
-    echelon              varchar(255) null comment '梯户比例',
-    is_elevator          varchar(255) null comment '是否有电梯',
-    listing_time         varchar(255) null comment '挂牌日期',
-    trade                varchar(255) null comment '交易权属',
-    last_transaction     varchar(255) null comment '上次交易',
-    housing_purpose      varchar(255) null comment '房屋用途',
-    years                varchar(255) null comment '房屋年限',
-    property             varchar(255) null comment '产权所属',
-    mortgage             varchar(255) null comment '抵押信息',
-    set_area             varchar(255) null comment '套内面积',
-    community_page_url   varchar(255) null
+    page_url                varchar(255) null comment '页面list',
+    title                   varchar(255) null comment '标题',
+    price                   varchar(255) null comment '总价',
+    unit_price              varchar(255) null comment '单价',
+    unit                    varchar(255) null comment '单位',
+    area_info               varchar(255) null comment '建筑历史',
+    community_name          varchar(255) null comment '小区名称',
+    area_name               varchar(255) null comment '大区域',
+    area_location           varchar(255) null comment '小区域',
+    house_type              varchar(255) null comment '房屋户型',
+    floor                   varchar(255) null comment '楼层',
+    area                    varchar(255) null comment '面积',
+    house_structure         varchar(255) null comment '户型结构',
+    building_type           varchar(255) null comment '建筑类型',
+    towards                 varchar(255) null comment '朝向',
+    building_structure      varchar(255) null comment '建筑类型',
+    renovation_condition    varchar(255) null comment '装修情况',
+    echelon                 varchar(255) null comment '梯户比例',
+    is_elevator             varchar(255) null comment '是否有电梯',
+    listing_time            varchar(255) null comment '挂牌日期',
+    trade                   varchar(255) null comment '交易权属',
+    last_transaction        varchar(255) null comment '上次交易',
+    housing_purpose         varchar(255) null comment '房屋用途',
+    years                   varchar(255) null comment '房屋年限',
+    property                varchar(255) null comment '产权所属',
+    mortgage                varchar(255) null comment '抵押信息',
+    set_area                varchar(255) null comment '套内面积',
+    community_page_url      varchar(255) null,
+    house_verification_code varchar(255) null comment '房屋校验码'
 );
 
 create index idx_community_page_url
@@ -63,43 +62,4 @@ create index idx_community_page_url
 
 create index idx_url
     on t_second_hand_housing (page_url);
-
-select ((community.community_unit_price - hoursing.unit_price) / community.community_unit_price) pre,
-       hoursing.unit_price,
-       community.community_unit_price,
-       hoursing.page_url,
-       title,
-       price,
-       unit_price,
-       unit,
-       area_info,
-       hoursing.community_name,
-       area_name,
-       area_location,
-       house_type,
-       floor,
-       area,
-       house_structure,
-       hoursing.building_type,
-       towards,
-       building_structure,
-       renovation_condition,
-       echelon,
-       is_elevator,
-       listing_time,
-       trade,
-       last_transaction,
-       housing_purpose,
-       years,
-       property,
-       mortgage,
-       set_area
-from t_second_hand_housing hoursing
-         inner join t_second_hand_community community on hoursing.community_page_url = community.page_url
-where housing_purpose like '%住宅%'
-  and is_elevator ='有'
-  and years not like "%未满两年%"
-  and ((community.community_unit_price - hoursing.unit_price) / community.community_unit_price) >0.1
-  and hoursing.unit_price<20000
-ORDER BY pre desc;
 

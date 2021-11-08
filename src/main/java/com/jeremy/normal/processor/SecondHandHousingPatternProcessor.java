@@ -75,6 +75,7 @@ public class SecondHandHousingPatternProcessor implements PageProcessor {
             contentFields.put("years", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[2]/div[2]/ul/li[5]/text()");
             contentFields.put("property", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[2]/div[2]/ul/li[6]/text()");
             contentFields.put("mortgage", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[2]/div[2]/ul/li[7]/span[2]/text()");
+            contentFields.put("houseVerificationCode", "/html/body/div[1]/div[5]/div[1]/div[1]/div/div/div[2]/div[2]/ul/li[9]/text()");
 
             contentFields.forEach((k, v) -> {
                 List<String> all = page.getHtml().xpath(v).all();

@@ -35,4 +35,5 @@ public class SecondHandHousingEntity {
     private String property;
     private String mortgage;
     private String communityPageUrl;
+    private String houseVerificationCode;
 }
