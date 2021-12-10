@@ -10,6 +10,7 @@ import com.jeremy.normal.mapper.SecondHandCommunityMapper;
 import com.jeremy.normal.mapper.SecondHandHousingMapper;
 import com.jeremy.normal.processor.SecondHandHousingPatternProcessor;
 import com.jeremy.normal.util.LinkUtil;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,16 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @Scope("prototype")
 public class SecondHandHousingReptile extends Thread {
+    private Integer min;
+    private Integer max;
+
+    public void setMin(Integer min) {
+        this.min = min;
+    }
+
+    public void setMax(Integer max) {
+        this.max = max;
+    }
 
     @Autowired
     private SecondHandHousingMapper secondHandHousingMapper;
@@ -91,7 +102,9 @@ public class SecondHandHousingReptile extends Thread {
         spiderWorker.setDownloader(new DefaultHttpClientDownloader());
         List<String> urls = new ArrayList<>();
         LambdaQueryWrapper<SecondHandCommunityEntity> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        lambdaQueryWrapper.le(SecondHandCommunityEntity::getId, 100);
+        lambdaQueryWrapper.le(SecondHandCommunityEntity::getId, max);
+        lambdaQueryWrapper.ge(SecondHandCommunityEntity::getId, min);
+
         List<SecondHandCommunityEntity> list = secondHandCommunityMapper.selectList(lambdaQueryWrapper);
 
             try {
@@ -143,7 +156,7 @@ public class SecondHandHousingReptile extends Thread {
     private Spider buildContentWorker(Map<String, LinkedHashMap<String, String>> itemHolder, PageProcessor processor) {
         Spider contentWorker = Spider.create(processor);
         contentWorker.setDownloader(new DefaultHttpClientDownloader());
-        contentWorker.thread(4).setUUID(UUID.randomUUID().toString()).
+        contentWorker.thread(6).setUUID(UUID.randomUUID().toString()).
                 addPipeline((resultItems, task) -> {
                     String requestUrl = resultItems.getRequest().getUrl();
                     log.info("get content page|url={}|uuid={}|spiderId={}", requestUrl);

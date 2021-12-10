@@ -17,11 +17,11 @@ public class SecondHandHousingPatternProcessor implements PageProcessor {
             .me()
             .setUserAgent(
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36")
-            .setSleepTime(25000)
+            .setSleepTime(15000)
             .setRetryTimes(5)
             .setRetrySleepTime(100000)
             .setCycleRetryTimes(3)
-            .setTimeOut(25000);
+            .setTimeOut(15000);
 
     @Override
     public void process(Page page) {
@@ -34,7 +34,7 @@ public class SecondHandHousingPatternProcessor implements PageProcessor {
                 List<String> pageList = page.getHtml().xpath(v).all().stream().filter(r -> r.contains("ershoufang")).collect(Collectors.toList());
                 page.putField(k, pageList);
                 System.out.println("--------------page_url---------------:"+ JSONObject.toJSONString(pageList));
-                if (!CollectionUtils.isEmpty(pageList)) {
+                if (!CollectionUtils.isEmpty(pageList)&&pageList.size()>10) {
                     int pgIndex = page.getUrl().get().indexOf("pg");
 
                     // 解决爬取小区的页面翻页达到10以上
